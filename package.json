@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "cross-env WATCHPACK_POLLING=true next dev --webpack",
     "build": "next build",
+    "deploy": "npm run build && gh-pages -d out --dotfiles",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },
@@ -23,6 +24,7 @@
     "cross-env": "^10.1.0",
     "eslint": "9.39.4",
     "eslint-config-next": "^16.2.10",
+    "gh-pages": "^6.3.0",
     "typescript": "5.9.3"
   },
   "overrides": {
