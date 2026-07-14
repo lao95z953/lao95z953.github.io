@@ -22,4 +22,8 @@ npm run lint
 
 ## 發布
 
-預定使用 `lao95z953/lao95z953.github.io` repository。GitHub 帳號限制解除後再設定部署。
+推送至 `main` 後，GitHub Actions 會自動建置並將 `out/` 發布至：
+
+`https://lao95z953.github.io/`
+
+也可以在 repository 的 Actions 頁面手動執行 `Deploy Next.js site to Pages`。
