@@ -23,8 +23,8 @@ export default function GuestbookPage() {
           </h1>
         </div>
         <p>
-          寫下一張便條紙，再把它貼到你喜歡的位置。這裡預計成為訪客、CTF
-          玩家與朋友交流的公共布告欄。
+          寫下一張便條紙，再把它貼到你喜歡的位置。這裡是訪客、CTF
+          玩家與朋友共同使用的公開布告欄。
         </p>
       </section>
 
@@ -33,7 +33,7 @@ export default function GuestbookPage() {
       <footer>
         <span>LAO_Z_3 / GUESTBOOK</span>
         <Link href="/">Return home ↖</Link>
-        <span>LOCAL PROTOTYPE / 2026</span>
+        <span>PUBLIC GUESTBOOK / 2026</span>
       </footer>
     </main>
   );

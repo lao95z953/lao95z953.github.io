@@ -7,8 +7,11 @@
   },
   "scripts": {
     "dev": "cross-env WATCHPACK_POLLING=true next dev --webpack",
+    "dev:pages": "npm run build && wrangler pages dev",
     "build": "next build",
     "deploy": "npm run build && wrangler pages deploy out --project-name lao95z953 --branch main",
+    "db:migrate:local": "wrangler d1 migrations apply lao95z953-guestbook --local",
+    "db:migrate:remote": "wrangler d1 migrations apply lao95z953-guestbook --remote",
     "test": "npm run build && node --test tests/rendered-html.test.mjs",
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },

@@ -23,9 +23,9 @@ type BoardNote = {
   pinned: boolean;
 };
 
-type StoredNote = Omit<BoardNote, "pinned"> & { pinned?: boolean };
-
 type PendingNote = Pick<BoardNote, "author" | "message" | "color">;
+
+type BoardStatus = "loading" | "ready" | "error";
 
 type DragState = {
   id: string;
@@ -35,8 +35,6 @@ type DragState = {
   maxX: number;
   maxY: number;
 };
-
-const storageKey = "lao-z-3-guestbook-prototype";
 
 const sampleNotes: BoardNote[] = [
   {
@@ -85,13 +83,6 @@ const sampleNotes: BoardNote[] = [
   },
 ];
 
-const placements = [
-  { x: 51, y: 53, rotation: -2 },
-  { x: 5, y: 61, rotation: 2 },
-  { x: 73, y: 58, rotation: 1 },
-  { x: 45, y: 8, rotation: -1 },
-];
-
 const colorOptions: { value: NoteColor; label: string }[] = [
   { value: "yellow", label: "黃色" },
   { value: "pink", label: "粉紅" },
@@ -103,7 +94,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function isStoredNote(value: unknown): value is StoredNote {
+function isBoardNote(value: unknown): value is BoardNote {
   if (!value || typeof value !== "object") return false;
   const note = value as Partial<BoardNote>;
   return (
@@ -115,70 +106,106 @@ function isStoredNote(value: unknown): value is StoredNote {
     typeof note.y === "number" &&
     typeof note.rotation === "number" &&
     typeof note.date === "string" &&
-    (note.pinned === undefined || typeof note.pinned === "boolean")
+    typeof note.pinned === "boolean"
   );
+}
+
+function isNotesResponse(value: unknown): value is { notes: BoardNote[] } {
+  if (!value || typeof value !== "object") return false;
+  const response = value as { notes?: unknown };
+  return Array.isArray(response.notes) && response.notes.every(isBoardNote);
+}
+
+function isNoteResponse(value: unknown): value is { note: BoardNote } {
+  if (!value || typeof value !== "object") return false;
+  return isBoardNote((value as { note?: unknown }).note);
+}
+
+function errorMessage(value: unknown, fallback: string) {
+  if (!value || typeof value !== "object") return fallback;
+  const message = (value as { error?: unknown }).error;
+  return typeof message === "string" ? message : fallback;
+}
+
+async function fetchPublicNotes(signal?: AbortSignal) {
+  const response = await fetch("/api/notes", {
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  const payload: unknown = await response.json();
+  if (!response.ok || !isNotesResponse(payload)) {
+    throw new Error(errorMessage(payload, "目前無法載入公開留言。"));
+  }
+  return payload.notes;
 }
 
 export function GuestbookBoard() {
   const boardRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
+  const notesRef = useRef<BoardNote[]>([...sampleNotes]);
   const [notes, setNotes] = useState<BoardNote[]>([...sampleNotes]);
   const [author, setAuthor] = useState("");
   const [message, setMessage] = useState("");
   const [color, setColor] = useState<NoteColor>("yellow");
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [pendingNote, setPendingNote] = useState<PendingNote | null>(null);
-  const [storageReady, setStorageReady] = useState(false);
+  const [boardStatus, setBoardStatus] = useState<BoardStatus>("loading");
+  const [boardError, setBoardError] = useState("");
+  const [publishError, setPublishError] = useState("");
+  const [isPublishing, setIsPublishing] = useState(false);
 
-  useEffect(() => {
-    let savedNotes: BoardNote[] | null = null;
+  async function loadNotes(signal?: AbortSignal) {
     try {
-      const saved = window.localStorage.getItem(storageKey);
-      const parsed: unknown = saved ? JSON.parse(saved) : null;
-      if (Array.isArray(parsed) && parsed.every(isStoredNote)) {
-        savedNotes = parsed.map((note) => ({
-          id: note.id,
-          author: note.author,
-          message: note.message,
-          color: note.color,
-          x: note.x,
-          y: note.y,
-          rotation: note.rotation,
-          date: note.date,
-          pinned: note.pinned ?? false,
-        }));
-      }
-    } catch {
-      window.localStorage.removeItem(storageKey);
+      const publicNotes = await fetchPublicNotes(signal);
+      notesRef.current = publicNotes;
+      setNotes(publicNotes);
+      setBoardStatus("ready");
+    } catch (error) {
+      if (signal?.aborted) return;
+      setBoardStatus("error");
+      setBoardError(
+        error instanceof Error ? error.message : "目前無法載入公開留言。",
+      );
     }
-
-    queueMicrotask(() => {
-      if (savedNotes) setNotes(savedNotes);
-      setStorageReady(true);
-    });
-  }, []);
+  }
 
   useEffect(() => {
-    if (!storageReady) return;
-    window.localStorage.setItem(storageKey, JSON.stringify(notes));
-  }, [notes, storageReady]);
+    const controller = new AbortController();
+    void fetchPublicNotes(controller.signal)
+      .then((publicNotes) => {
+        if (controller.signal.aborted) return;
+        notesRef.current = publicNotes;
+        setNotes(publicNotes);
+        setBoardStatus("ready");
+      })
+      .catch((error: unknown) => {
+        if (controller.signal.aborted) return;
+        setBoardStatus("error");
+        setBoardError(
+          error instanceof Error ? error.message : "目前無法載入公開留言。",
+        );
+      });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (!pendingNote) return;
 
     function closeOnEscape(event: globalThis.KeyboardEvent) {
-      if (event.key === "Escape") setPendingNote(null);
+      if (event.key === "Escape" && !isPublishing) setPendingNote(null);
     }
 
     document.addEventListener("keydown", closeOnEscape);
     return () => document.removeEventListener("keydown", closeOnEscape);
-  }, [pendingNote]);
+  }, [isPublishing, pendingNote]);
 
   function requestPublish(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedMessage = message.trim();
     if (!trimmedMessage) return;
 
+    setPublishError("");
     setPendingNote({
       author: author.trim() || "anonymous",
       message: trimmedMessage,
@@ -186,34 +213,72 @@ export function GuestbookBoard() {
     });
   }
 
-  function confirmPublish() {
-    if (!pendingNote) return;
+  async function confirmPublish() {
+    if (!pendingNote || isPublishing) return;
 
-    const placement = placements[notes.length % placements.length];
-    const date = new Intl.DateTimeFormat("zh-TW", {
-      month: "2-digit",
-      day: "2-digit",
-    })
-      .format(new Date())
-      .replace("/", ".");
+    setIsPublishing(true);
+    setPublishError("");
+    try {
+      const response = await fetch("/api/notes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(pendingNote),
+      });
+      const payload: unknown = await response.json();
+      if (!response.ok || !isNoteResponse(payload)) {
+        throw new Error(errorMessage(payload, "目前無法發布留言。"));
+      }
 
-    setNotes((current) => [
-      ...current,
-      {
-        id: globalThis.crypto.randomUUID(),
-        ...pendingNote,
-        ...placement,
-        date,
-        pinned: false,
-      },
-    ]);
-    setMessage("");
-    setPendingNote(null);
+      const updatedNotes = [...notesRef.current, payload.note];
+      notesRef.current = updatedNotes;
+      setNotes(updatedNotes);
+      setMessage("");
+      setPendingNote(null);
+      setBoardStatus("ready");
+      setBoardError("");
+    } catch (error) {
+      setPublishError(
+        error instanceof Error ? error.message : "目前無法發布留言。",
+      );
+    } finally {
+      setIsPublishing(false);
+    }
   }
 
-  function resetBoard() {
-    setNotes([...sampleNotes]);
+  function refreshBoard() {
     setActiveNoteId(null);
+    setBoardStatus("loading");
+    setBoardError("");
+    void loadNotes();
+  }
+
+  function updateNotePosition(noteId: string, x: number, y: number) {
+    const updatedNotes = notesRef.current.map((note) =>
+      note.id === noteId ? { ...note, x, y } : note,
+    );
+    notesRef.current = updatedNotes;
+    setNotes(updatedNotes);
+  }
+
+  async function persistPosition(noteId: string, x: number, y: number) {
+    try {
+      const response = await fetch(`/api/notes/${encodeURIComponent(noteId)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ x, y }),
+      });
+      const payload: unknown = await response.json();
+      if (!response.ok) {
+        throw new Error(errorMessage(payload, "目前無法儲存便條位置。"));
+      }
+      setBoardStatus("ready");
+      setBoardError("");
+    } catch (error) {
+      setBoardStatus("error");
+      setBoardError(
+        error instanceof Error ? error.message : "目前無法儲存便條位置。",
+      );
+    }
   }
 
   function startDragging(event: PointerEvent<HTMLElement>, noteId: string) {
@@ -243,16 +308,10 @@ export function GuestbookBoard() {
     const x = ((event.clientX - boardRect.left - drag.offsetX) / boardRect.width) * 100;
     const y = ((event.clientY - boardRect.top - drag.offsetY) / boardRect.height) * 100;
 
-    setNotes((current) =>
-      current.map((note) =>
-        note.id === drag.id
-          ? {
-              ...note,
-              x: clamp(x, 0, drag.maxX),
-              y: clamp(y, 0, drag.maxY),
-            }
-          : note,
-      ),
+    updateNotePosition(
+      drag.id,
+      clamp(x, 0, drag.maxX),
+      clamp(y, 0, drag.maxY),
     );
   }
 
@@ -260,6 +319,11 @@ export function GuestbookBoard() {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
+    const drag = dragRef.current;
+    const note = drag
+      ? notesRef.current.find((candidate) => candidate.id === drag.id)
+      : null;
+    if (note) void persistPosition(note.id, note.x, note.y);
     dragRef.current = null;
   }
 
@@ -275,23 +339,18 @@ export function GuestbookBoard() {
 
     event.preventDefault();
     const distance = event.shiftKey ? 5 : 1;
+    const note = notesRef.current.find((candidate) => candidate.id === noteId);
+    if (!note) return;
+    const x = clamp(note.x + direction.x * distance, 0, 84);
+    const y = clamp(note.y + direction.y * distance, 0, 76);
     setActiveNoteId(noteId);
-    setNotes((current) =>
-      current.map((note) =>
-        note.id === noteId
-          ? {
-              ...note,
-              x: clamp(note.x + direction.x * distance, 0, 84),
-              y: clamp(note.y + direction.y * distance, 0, 76),
-            }
-          : note,
-      ),
-    );
+    updateNotePosition(noteId, x, y);
+    void persistPosition(noteId, x, y);
   }
 
   return (
     <>
-      <section className="guestbook-workspace" aria-label="留言板原型">
+      <section className="guestbook-workspace" aria-label="公開訪客留言板">
         <aside className="guestbook-composer">
           <div className="composer-heading">
             <span>01 / WRITE</span>
@@ -348,13 +407,20 @@ export function GuestbookBoard() {
             <button className="pin-note-button" type="submit">
               預覽並貼上 <span aria-hidden="true">↗</span>
             </button>
-            <button className="reset-board-button" type="button" onClick={resetBoard}>
-              重設展示內容
+            <button className="reset-board-button" type="button" onClick={refreshBoard}>
+              重新載入公開留言
             </button>
           </form>
 
-          <p className="prototype-notice">
-            LOCAL PROTOTYPE / 目前留言只儲存在這台裝置；公開管理功能尚未啟用。
+          <p
+            className={`board-status${boardStatus === "error" ? " is-error" : ""}`}
+            role="status"
+          >
+            {boardStatus === "loading"
+              ? "CONNECTING / 正在載入公開留言……"
+              : boardStatus === "error"
+                ? `CONNECTION ERROR / ${boardError}`
+                : "PUBLIC BOARD / 所有訪客看到並使用同一個留言板。"}
           </p>
         </aside>
 
@@ -395,7 +461,7 @@ export function GuestbookBoard() {
             ))}
           </div>
           <p className="board-instructions">
-            便條可以自由拖曳；置頂與刪除功能會在完成管理者驗證後再啟用。
+            所有訪客共享同一批便條，也可以拖曳並保存位置；管理功能尚未公開。
           </p>
         </div>
       </section>
@@ -405,7 +471,9 @@ export function GuestbookBoard() {
           className="note-confirmation-backdrop"
           role="presentation"
           onPointerDown={(event) => {
-            if (event.target === event.currentTarget) setPendingNote(null);
+            if (event.target === event.currentTarget && !isPublishing) {
+              setPendingNote(null);
+            }
           }}
         >
           <section
@@ -425,13 +493,23 @@ export function GuestbookBoard() {
             <div className="confirmation-copy">
               <span>FINAL CHECK / 發布確認</span>
               <h2 id="note-confirmation-title">要把這張便條貼上去嗎？</h2>
-              <p>確認後，便條就會出現在留言板上。你仍然可以在發布前返回修改。</p>
+              <p>確認後，便條會公開出現在所有訪客的留言板上。發布前仍可返回修改。</p>
+              {publishError && <p className="publish-error">{publishError}</p>}
               <div>
-                <button type="button" onClick={() => setPendingNote(null)}>
+                <button
+                  type="button"
+                  onClick={() => setPendingNote(null)}
+                  disabled={isPublishing}
+                >
                   返回修改
                 </button>
-                <button type="button" onClick={confirmPublish} autoFocus>
-                  確認貼上
+                <button
+                  type="button"
+                  onClick={confirmPublish}
+                  disabled={isPublishing}
+                  autoFocus
+                >
+                  {isPublishing ? "正在發布……" : "確認貼上"}
                 </button>
               </div>
             </div>

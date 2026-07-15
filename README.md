@@ -20,6 +20,14 @@ npm run lint
 
 正式版本會輸出為 `out/` 靜態網站，並以 Direct Upload 部署至 Cloudflare Pages。
 
+## 公開留言板
+
+Guestbook 透過 Cloudflare Pages Functions 提供同網域 API，留言與便條位置儲存在 D1。若新增資料庫 migration，發布前先執行：
+
+```bash
+npm run db:migrate:remote
+```
+
 ## 發布
 
 完成一次 `npx wrangler login` 後，執行下列指令即可建置並重新發布正式網站：

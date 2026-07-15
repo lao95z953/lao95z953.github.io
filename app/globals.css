@@ -773,7 +773,7 @@ footer a {
 .board-toolbar,
 .guestbook-field > span,
 .note-colors legend,
-.prototype-notice,
+.board-status,
 .board-instructions {
   font-family: var(--mono);
 }
@@ -933,12 +933,16 @@ footer a {
   font-size: 9px;
 }
 
-.prototype-notice {
+.board-status {
   margin: auto 0 0;
   padding-top: 28px;
   color: var(--muted);
   font-size: 9px;
   line-height: 1.55;
+}
+
+.board-status.is-error {
+  color: var(--accent);
 }
 
 .guestbook-board-area {
@@ -1178,6 +1182,13 @@ footer a {
   line-height: 1.6;
 }
 
+.confirmation-copy .publish-error {
+  margin-top: 12px;
+  color: #ff9b82;
+  font-family: var(--mono);
+  font-size: 10px;
+}
+
 .confirmation-copy > div {
   display: flex;
   gap: 9px;
@@ -1203,6 +1214,11 @@ footer a {
 .confirmation-copy button:focus-visible {
   outline: 3px solid var(--paper-light);
   outline-offset: 3px;
+}
+
+.confirmation-copy button:disabled {
+  cursor: wait;
+  opacity: 0.58;
 }
 
 footer {
@@ -1352,7 +1368,7 @@ footer span:last-child {
     border-bottom: 1px solid var(--ink);
   }
 
-  .prototype-notice {
+  .board-status {
     margin-top: 28px;
   }
 
