@@ -21,7 +21,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://lao95z953.github.io"),
+  metadataBase: new URL("https://lao95z953.pages.dev"),
   title: "LAO_Z_3 — Security Field Notes / 資安學習筆記",
   description:
     "LAO_Z_3 的 CTF、Web Security、AI Security、Rev 與 Pwn 學習筆記。",
@@ -32,7 +32,7 @@ export const metadata: Metadata = {
     title: "LAO_Z_3 — Security Field Notes / 資安學習筆記",
     description:
       "持續學習中的資安實踐者，主要領域為 Web 與 AI Security，正在學習 Rev 與 Pwn。",
-    url: "https://lao95z953.github.io",
+    url: "https://lao95z953.pages.dev",
     siteName: "LAO_Z_3 Security Field Notes",
     type: "website",
   },

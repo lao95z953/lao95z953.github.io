@@ -50,7 +50,7 @@ test("exports discoverability files", async () => {
   ]);
 
   assert.match(robots, /User-Agent:\s*\*/i);
-  assert.match(robots, /Sitemap:\s*https:\/\/lao95z953\.github\.io\/sitemap\.xml/i);
-  assert.match(sitemap, /https:\/\/lao95z953\.github\.io/);
-  assert.match(sitemap, /https:\/\/lao95z953\.github\.io\/guestbook/);
+  assert.match(robots, /Sitemap:\s*https:\/\/lao95z953\.pages\.dev\/sitemap\.xml/i);
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev/);
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/guestbook/);
 });

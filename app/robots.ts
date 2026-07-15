@@ -8,6 +8,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://lao95z953.github.io/sitemap.xml",
+    sitemap: "https://lao95z953.pages.dev/sitemap.xml",
   };
 }

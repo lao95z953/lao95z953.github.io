@@ -18,11 +18,11 @@ npm test
 npm run lint
 ```
 
-正式版本會輸出為 `out/` 靜態網站，可部署至 GitHub Pages。
+正式版本會輸出為 `out/` 靜態網站，並以 Direct Upload 部署至 Cloudflare Pages。
 
 ## 發布
 
-執行下列指令，網站會建置並發布至 `gh-pages` 分支：
+完成一次 `npx wrangler login` 後，執行下列指令即可建置並重新發布正式網站：
 
 ```bash
 npm run deploy
@@ -30,4 +30,4 @@ npm run deploy
 
 公開網址：
 
-`https://lao95z953.github.io/`
+`https://lao95z953.pages.dev/`
