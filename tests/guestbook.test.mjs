@@ -15,6 +15,7 @@ test("guestbook exports the bulletin-board prototype", async () => {
   assert.match(html, /寫一張便條/);
   assert.match(html, /LOCAL PROTOTYPE/);
   assert.match(html, /歡迎來到留言板/);
+  assert.doesNotMatch(html, /OWNER MODE/);
 });
 
 test("guestbook notes can be created, stored and repositioned", async () => {
@@ -33,15 +34,16 @@ test("guestbook notes can be created, stored and repositioned", async () => {
   assert.match(source, /確認貼上/);
 });
 
-test("guestbook owner controls can pin and delete notes", async () => {
+test("guestbook hides owner controls until authentication exists", async () => {
   const source = await readFile(
     new URL("app/guestbook/GuestbookBoard.tsx", projectRoot),
     "utf8",
   );
 
-  assert.match(source, /aria-pressed=\{adminMode\}/);
-  assert.match(source, /function togglePinned/);
-  assert.match(source, /function deleteNote/);
-  assert.match(source, /OWNER MODE/);
+  assert.doesNotMatch(source, /adminMode/);
+  assert.doesNotMatch(source, /function togglePinned/);
+  assert.doesNotMatch(source, /function deleteNote/);
+  assert.doesNotMatch(source, /OWNER MODE/);
+  assert.match(source, /公開管理功能尚未啟用/);
   assert.match(source, /PINNED/);
 });

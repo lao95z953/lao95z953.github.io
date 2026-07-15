@@ -128,7 +128,6 @@ export function GuestbookBoard() {
   const [color, setColor] = useState<NoteColor>("yellow");
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [pendingNote, setPendingNote] = useState<PendingNote | null>(null);
-  const [adminMode, setAdminMode] = useState(false);
   const [storageReady, setStorageReady] = useState(false);
 
   useEffect(() => {
@@ -215,20 +214,6 @@ export function GuestbookBoard() {
   function resetBoard() {
     setNotes([...sampleNotes]);
     setActiveNoteId(null);
-    setAdminMode(false);
-  }
-
-  function togglePinned(noteId: string) {
-    setNotes((current) =>
-      current.map((note) =>
-        note.id === noteId ? { ...note, pinned: !note.pinned } : note,
-      ),
-    );
-  }
-
-  function deleteNote(noteId: string) {
-    setNotes((current) => current.filter((note) => note.id !== noteId));
-    if (activeNoteId === noteId) setActiveNoteId(null);
   }
 
   function startDragging(event: PointerEvent<HTMLElement>, noteId: string) {
@@ -369,7 +354,7 @@ export function GuestbookBoard() {
           </form>
 
           <p className="prototype-notice">
-            PROTOTYPE / 管理模式僅供版面預覽，正式權限將綁定 GitHub 身分。
+            LOCAL PROTOTYPE / 目前留言只儲存在這台裝置；公開管理功能尚未啟用。
           </p>
         </aside>
 
@@ -378,14 +363,6 @@ export function GuestbookBoard() {
             <span>02 / PIN ANYWHERE</span>
             <div>
               <strong>{notes.length.toString().padStart(2, "0")} NOTES</strong>
-              <button
-                className="admin-mode-button"
-                type="button"
-                aria-pressed={adminMode}
-                onClick={() => setAdminMode((current) => !current)}
-              >
-                {adminMode ? "OWNER MODE: ON" : "OWNER MODE"}
-              </button>
             </div>
           </div>
           <div className="guestbook-board" ref={boardRef}>
@@ -409,19 +386,6 @@ export function GuestbookBoard() {
               >
                 <span className="note-pin" aria-hidden="true" />
                 {note.pinned && <span className="pinned-note-label">PINNED</span>}
-                {adminMode && (
-                  <div
-                    className="note-admin-actions"
-                    onPointerDown={(event) => event.stopPropagation()}
-                  >
-                    <button type="button" onClick={() => togglePinned(note.id)}>
-                      {note.pinned ? "UNPIN" : "PIN"}
-                    </button>
-                    <button type="button" onClick={() => deleteNote(note.id)}>
-                      DELETE
-                    </button>
-                  </div>
-                )}
                 <p>{note.message}</p>
                 <footer>
                   <strong>@{note.author}</strong>
@@ -431,7 +395,7 @@ export function GuestbookBoard() {
             ))}
           </div>
           <p className="board-instructions">
-            所有人都可以移動便條；OWNER MODE 可預覽置頂、取消置頂與刪除功能。
+            便條可以自由拖曳；置頂與刪除功能會在完成管理者驗證後再啟用。
           </p>
         </div>
       </section>
