@@ -14,6 +14,11 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, /Tools &amp; Labs/);
   assert.match(html, />Reflections</);
   assert.match(html, />Guestbook/);
+  assert.match(html, /Community wall \/ 訪客留言板/);
+  assert.match(html, /寫一張便條/);
+  assert.match(html, /id="guestbook"/);
+  assert.match(html, /LAO_Z_3 \/ GUESTBOOK/);
+  assert.doesNotMatch(html, /LAO_Z_3 \/ FIELD NOTES/);
   assert.match(html, /收錄 CTF WP 以及未來的 Pentest 靶機 WP/);
   assert.match(html, /Achievements \/ 成績紀錄/);
   assert.match(html, /Google Cybersecurity/);

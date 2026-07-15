@@ -695,6 +695,42 @@ footer a {
   font: 600 11px/1 var(--mono);
 }
 
+.home-guestbook {
+  scroll-margin-top: 24px;
+  border-top: 1px solid var(--ink);
+}
+
+.home-guestbook-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 420px;
+  gap: 60px;
+  align-items: end;
+  padding: 42px 56px 38px;
+  border-bottom: 1px solid var(--ink);
+}
+
+.home-guestbook-head h2 {
+  margin: 20px 0 0;
+  font: 400 clamp(52px, 5.7vw, 88px) / 0.9 var(--serif);
+  letter-spacing: -0.05em;
+}
+
+.home-guestbook-intro p {
+  max-width: 410px;
+  margin: 0 0 20px;
+  color: var(--body-ink);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.home-guestbook-intro a {
+  padding-bottom: 4px;
+  border-bottom: 2px solid var(--accent);
+  font: 600 11px/1 var(--mono);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
 .guestbook-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 380px;
@@ -1280,6 +1316,13 @@ footer span:last-child {
     grid-template-columns: 270px minmax(0, 1fr);
   }
 
+  .home-guestbook-head {
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: 36px;
+    padding-right: 42px;
+    padding-left: 42px;
+  }
+
   .guestbook-board-area {
     padding-right: 22px;
     padding-left: 22px;
@@ -1315,6 +1358,19 @@ footer span:last-child {
     display: block;
     min-height: 0;
     padding: 39px 20px 36px;
+  }
+
+  .home-guestbook-head {
+    display: block;
+    padding: 36px 20px 32px;
+  }
+
+  .home-guestbook-head h2 {
+    font-size: clamp(48px, 15vw, 68px);
+  }
+
+  .home-guestbook-intro {
+    margin-top: 26px;
   }
 
   .guestbook-hero h1 {

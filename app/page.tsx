@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShellHeader } from "./_components/ShellHeader";
+import { GuestbookBoard } from "./guestbook/GuestbookBoard";
 
 const collections = [
   {
@@ -92,9 +93,9 @@ export default function Home() {
             <Link className="primary-action" href="/archive/">
               Explore archive <span aria-hidden="true">→</span>
             </Link>
-            <Link className="text-action" href="/guestbook/">
-              Guestbook <span aria-hidden="true">↗</span>
-            </Link>
+            <a className="text-action" href="#guestbook">
+              Guestbook <span aria-hidden="true">↓</span>
+            </a>
             <a
               className="text-action"
               href="https://github.com/lao95z953"
@@ -218,8 +219,32 @@ export default function Home() {
         </aside>
       </section>
 
+      <section
+        className="home-guestbook"
+        id="guestbook"
+        aria-labelledby="home-guestbook-title"
+      >
+        <div className="home-guestbook-head">
+          <div>
+            <p className="kicker">Community wall / 訪客留言板</p>
+            <h2 id="home-guestbook-title">Guestbook / 留言板</h2>
+          </div>
+          <div className="home-guestbook-intro">
+            <p>
+              寫下一張便條紙，再把它貼到你喜歡的位置。所有訪客都可以拖曳便條，
+              發布前會先顯示確認視窗。
+            </p>
+            <Link href="/guestbook/">
+              Open full page <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+        </div>
+
+        <GuestbookBoard />
+      </section>
+
       <footer>
-        <span>LAO_Z_3 / FIELD NOTES</span>
+        <span>LAO_Z_3 / GUESTBOOK</span>
         <span>NO TRACKING / NO UNNECESSARY SCRIPTS</span>
         <span>ISSUE 001 / 2026</span>
       </footer>
