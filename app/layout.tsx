@@ -54,6 +54,11 @@ export default function RootLayout({
       <body
         className={`${instrumentSerif.variable} ${inter.variable} ${ibmPlexMono.variable}`}
       >
+        <script
+          src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+          async
+          defer
+        />
         {children}
       </body>
     </html>

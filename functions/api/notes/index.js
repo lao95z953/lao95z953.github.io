@@ -17,6 +17,27 @@ function isTrustedMutation(request) {
   return origin === new URL(request.url).origin;
 }
 
+async function verifyTurnstile(env, token, ip) {
+  // 尚未設定機密時「放行」，方便分階段上線；
+  // 只要 TURNSTILE_SECRET 沒設，等於沒有防護，別忘了在 Cloudflare Pages 設定。
+  if (!env.TURNSTILE_SECRET) return true;
+  if (typeof token !== "string" || !token) return false;
+  const form = new FormData();
+  form.append("secret", env.TURNSTILE_SECRET);
+  form.append("response", token);
+  if (ip) form.append("remoteip", ip);
+  try {
+    const res = await fetch(
+      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+      { method: "POST", body: form },
+    );
+    const data = await res.json();
+    return data.success === true;
+  } catch {
+    return false;
+  }
+}
+
 function randomBetween(minimum, maximum) {
   const values = new Uint32Array(1);
   crypto.getRandomValues(values);
@@ -85,6 +106,11 @@ export async function onRequestPost({ request, env }) {
   }
   if (!allowedColors.has(color)) {
     return json({ error: "便條顏色不正確。" }, 400);
+  }
+
+  const clientIp = request.headers.get("CF-Connecting-IP");
+  if (!(await verifyTurnstile(env, payload.turnstileToken, clientIp))) {
+    return json({ error: "驗證失敗，請重新完成人機驗證後再送出。" }, 403);
   }
 
   try {

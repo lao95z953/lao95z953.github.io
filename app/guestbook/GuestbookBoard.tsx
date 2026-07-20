@@ -90,6 +90,18 @@ const colorOptions: { value: NoteColor; label: string }[] = [
   { value: "green", label: "綠色" },
 ];
 
+const TURNSTILE_SITEKEY = "0x4AAAAAAD5gpppZIdBJYLsW";
+
+type TurnstileApi = {
+  render: (el: HTMLElement, options: Record<string, unknown>) => string;
+  remove: (id: string) => void;
+  reset: (id: string) => void;
+};
+
+function getTurnstile(): TurnstileApi | undefined {
+  return (window as unknown as { turnstile?: TurnstileApi }).turnstile;
+}
+
 function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
@@ -154,6 +166,9 @@ export function GuestbookBoard() {
   const [boardError, setBoardError] = useState("");
   const [publishError, setPublishError] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
+  const [turnstileToken, setTurnstileToken] = useState("");
+  const turnstileRef = useRef<HTMLDivElement>(null);
+  const widgetIdRef = useRef<string | null>(null);
 
   async function loadNotes(signal?: AbortSignal) {
     try {
@@ -200,6 +215,40 @@ export function GuestbookBoard() {
     return () => document.removeEventListener("keydown", closeOnEscape);
   }, [isPublishing, pendingNote]);
 
+  useEffect(() => {
+    if (!pendingNote) return;
+
+    let cancelled = false;
+    const container = turnstileRef.current;
+
+    function renderWidget() {
+      if (cancelled) return;
+      const turnstile = getTurnstile();
+      if (!turnstile || !container) {
+        window.setTimeout(renderWidget, 150);
+        return;
+      }
+      widgetIdRef.current = turnstile.render(container, {
+        sitekey: TURNSTILE_SITEKEY,
+        callback: (token: string) => setTurnstileToken(token),
+        "expired-callback": () => setTurnstileToken(""),
+        "error-callback": () => setTurnstileToken(""),
+      });
+    }
+
+    renderWidget();
+
+    return () => {
+      cancelled = true;
+      const turnstile = getTurnstile();
+      if (turnstile && widgetIdRef.current) {
+        turnstile.remove(widgetIdRef.current);
+      }
+      widgetIdRef.current = null;
+      setTurnstileToken("");
+    };
+  }, [pendingNote]);
+
   function requestPublish(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const trimmedMessage = message.trim();
@@ -214,7 +263,7 @@ export function GuestbookBoard() {
   }
 
   async function confirmPublish() {
-    if (!pendingNote || isPublishing) return;
+    if (!pendingNote || isPublishing || !turnstileToken) return;
 
     setIsPublishing(true);
     setPublishError("");
@@ -222,7 +271,7 @@ export function GuestbookBoard() {
       const response = await fetch("/api/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(pendingNote),
+        body: JSON.stringify({ ...pendingNote, turnstileToken }),
       });
       const payload: unknown = await response.json();
       if (!response.ok || !isNoteResponse(payload)) {
@@ -240,6 +289,12 @@ export function GuestbookBoard() {
       setPublishError(
         error instanceof Error ? error.message : "目前無法發布留言。",
       );
+      // Turnstile token 是一次性的，失敗後重置 widget 以取得新 token
+      const turnstile = getTurnstile();
+      if (turnstile && widgetIdRef.current) {
+        turnstile.reset(widgetIdRef.current);
+      }
+      setTurnstileToken("");
     } finally {
       setIsPublishing(false);
     }
@@ -495,6 +550,11 @@ export function GuestbookBoard() {
               <h2 id="note-confirmation-title">要把這張便條貼上去嗎？</h2>
               <p>確認後，便條會公開出現在所有訪客的留言板上。發布前仍可返回修改。</p>
               {publishError && <p className="publish-error">{publishError}</p>}
+              <div
+                ref={turnstileRef}
+                className="cf-turnstile"
+                style={{ margin: "4px 0" }}
+              />
               <div>
                 <button
                   type="button"
@@ -506,10 +566,14 @@ export function GuestbookBoard() {
                 <button
                   type="button"
                   onClick={confirmPublish}
-                  disabled={isPublishing}
+                  disabled={isPublishing || !turnstileToken}
                   autoFocus
                 >
-                  {isPublishing ? "正在發布……" : "確認貼上"}
+                  {isPublishing
+                    ? "正在發布……"
+                    : turnstileToken
+                      ? "確認貼上"
+                      : "請先完成人機驗證"}
                 </button>
               </div>
             </div>
