@@ -16,9 +16,15 @@
     "lint": "eslint . --ignore-pattern out --ignore-pattern .next"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
     "next": "^16.2.10",
     "react": "^19.2.7",
-    "react-dom": "^19.2.7"
+    "react-dom": "^19.2.7",
+    "react-markdown": "^10.1.0",
+    "rehype-highlight": "^7.0.2",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@types/node": "22.19.19",
@@ -27,8 +33,8 @@
     "cross-env": "^10.1.0",
     "eslint": "9.39.4",
     "eslint-config-next": "^16.2.10",
-    "wrangler": "^4.110.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "wrangler": "^4.110.0"
   },
   "overrides": {
     "postcss": "8.5.16"
