@@ -11,9 +11,10 @@ function json(value, status = 200) {
   });
 }
 
-function isSameOrigin(request) {
+// 變更類請求必須帶相符的 Origin（瀏覽器 fetch POST/PATCH 一定會帶）
+function isTrustedMutation(request) {
   const origin = request.headers.get("Origin");
-  return !origin || origin === new URL(request.url).origin;
+  return origin === new URL(request.url).origin;
 }
 
 function randomBetween(minimum, maximum) {
@@ -60,7 +61,7 @@ export async function onRequestGet({ env }) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!isSameOrigin(request)) {
+  if (!isTrustedMutation(request)) {
     return json({ error: "不允許從其他網站發布留言。" }, 403);
   }
 
