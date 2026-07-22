@@ -50,10 +50,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="zh-Hant">
-      <body
-        className={`${instrumentSerif.variable} ${inter.variable} ${ibmPlexMono.variable}`}
-      >
+    <html
+      lang="zh-Hant"
+      className={`${instrumentSerif.variable} ${inter.variable} ${ibmPlexMono.variable}`}
+    >
+      <body>
         <script
           src="https://challenges.cloudflare.com/turnstile/v0/api.js"
           async

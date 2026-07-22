@@ -338,5 +338,5 @@ p.interactive()
 這次終於成功了，然後 flag 在 `/home/start` 裡面
 
 ```text
-FLAG{Pwn4bl3_tW_1s_y0ur_st4rt}
+FLAG{<打碼>}
 ```

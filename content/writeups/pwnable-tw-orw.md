@@ -8,6 +8,8 @@ summary: "程式把輸入當 shellcode 直接執行，但 seccomp 只放行 open
 
 ## 閱讀過程
 
+### binary 資訊與 IDA 反編譯
+
 這是一個 32bits 的 ELF 然後這個比 Start 的內容還要複雜一些
 NX 和 PIE 是關的，但是有偵測到 Canary
 可以用 IDA Pro Decomplied
@@ -39,6 +41,8 @@ undefined4 main(void)
   return 0;
 }
 ```
+
+### 看懂 seccomp 白名單
 
 emm...
 完全看不懂，但是我猜可能也是和 ShellCode 有關
@@ -79,6 +83,8 @@ prctl(0x16,2,local_88);
 flag = open(/home/orw/flag)
 write(flag)
 ```
+
+### main：定位輸入點
 
 然後 main 的 decomplied 出來的幾乎看不懂他想做什麼
 所以我去看他的 ASM 了
@@ -189,5 +195,5 @@ log.info(output)
 Flag:
 
 ```text
-FLAG{sh3llc0ding_w1th_op3n_r34d_writ3}
+FLAG{<打碼>}
 ```

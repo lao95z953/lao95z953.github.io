@@ -413,6 +413,7 @@ h1 em {
   max-width: 900px;
   margin: 31px 0 24px;
   font-size: clamp(66px, 6.5vw, 104px);
+  line-height: 1.1;
 }
 
 .interior-mark {
@@ -1574,14 +1575,13 @@ footer span:last-child {
 }
 
 .writeup-body h3 {
-  font: 500 15px/1.4 var(--mono);
+  font: 500 20px/1.35 var(--serif);
   color: var(--ink);
-  letter-spacing: 0.02em;
   margin: 34px 0 12px;
 }
 
 .writeup-body h4 {
-  font: 500 13px/1.4 var(--mono);
+  font: 500 16px/1.4 var(--mono);
   color: var(--accent);
   letter-spacing: 0.03em;
   margin: 26px 0 10px;
@@ -1589,6 +1589,15 @@ footer span:last-child {
 
 .writeup-body p {
   margin: 0 0 16px;
+}
+
+.writeup-body img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 22px 0;
+  border: 1px solid var(--line);
+  border-radius: 4px;
 }
 
 .writeup-body a {
