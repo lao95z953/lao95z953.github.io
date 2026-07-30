@@ -9,7 +9,9 @@ test("exports the finished Traditional Chinese homepage", async () => {
 
   assert.match(html, /LAO_Z_3/);
   assert.match(html, /lang="zh-Hant"/);
-  assert.match(html, /Break\./);
+  assert.match(html, /Understand\./);
+  assert.match(html, /Exploit\./);
+  assert.match(html, /Explain\./);
   assert.match(html, />Writeups</);
   assert.match(html, /Tools &amp; Labs/);
   assert.match(html, />Reflections</);
@@ -40,7 +42,8 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.ok(
     html.indexOf("JuniorCryptCTF") < html.indexOf("InfoSecCTF"),
   );
-  assert.match(html, /仍在學習中的 CTF 玩家/);
+  assert.match(html, /我是一名在 CTF 和 PT 的學生/);
+  assert.match(html, /如果有任何寫錯的地方請直接指出/);
   assert.match(html, /Web Security/);
   assert.match(html, /AI Security/);
   assert.match(html, /Reverse Engineering/);

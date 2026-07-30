@@ -88,14 +88,12 @@ export default function Home() {
         <div className="hero-copy">
           <p className="kicker">Security learning log / 資安學習紀錄</p>
           <h1 id="hero-title">
-            Break.
+            Understand.
             <br />
-            Understand. <em>Rebuild.</em>
+            Exploit. <em>Explain.</em>
           </h1>
           <p className="intro">
-            我是一名仍在學習中的 CTF 玩家與開發者。目前較擅長 Web 與 AI
-            Security，並正在努力學習 Reverse Engineering 與 Pwn。這裡記錄我
-            如何理解問題、驗證想法，再把成果整理成可以重現的內容。
+            我是一名在 CTF 和 PT 的學生，目前比較擅長 Web 和 AI Sec 相關的題目，並且正在努力學習 Pwn，這裡記錄我平時比較完整的筆記與 Writeup，如果有任何寫錯的地方請直接指出。
           </p>
           <div className="hero-actions">
             <Link className="primary-action" href="/archive/">
