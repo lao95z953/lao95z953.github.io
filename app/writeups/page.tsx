@@ -30,11 +30,11 @@ export default function WriteupsPage() {
     <InteriorPage eyebrow="Collection 01 / technical notes" title="Writeups" intro="不只 CTF。這裡也會收錄未來的 Pentest／PT 靶機 Writeups，保留我如何理解目標、哪些證據改變了判斷，以及最後的方法為什麼能夠成立。" mark="{ }" reference="Writeups / evidence first">
       {publishedItems.length > 0 && (
         <>
-          <h2 className="writeup-section-title">Published / 已發佈</h2>
+          <h2 className="collection-section-title">Published / 已發佈</h2>
           <CollectionIndex items={publishedItems} />
         </>
       )}
-      <h2 className="writeup-section-title">Categories / 分類</h2>
+      <h2 className="collection-section-title">Categories / 分類</h2>
       <QueueList items={categories} />
     </InteriorPage>
   );

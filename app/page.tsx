@@ -27,6 +27,14 @@ const collections = [
     href: "/reflections/",
     description: "記錄活動參與心得，以及我對資安、技術與成長的想法。",
   },
+  {
+    number: "04",
+    label: "NOTES",
+    mark: "§",
+    title: "Notes",
+    href: "/notes/",
+    description: "把一個機制想清楚之後留下的概念筆記。",
+  },
 ] as const;
 
 const achievements = [
@@ -155,7 +163,7 @@ export default function Home() {
         <div className="collections-area">
           <div className="section-head">
             <h2 id="archive-title">Working Archive / 內容索引</h2>
-            <span>03 COLLECTIONS</span>
+            <span>04 COLLECTIONS</span>
           </div>
 
           <div className="cards">

