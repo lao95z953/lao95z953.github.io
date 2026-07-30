@@ -8,7 +8,7 @@ type InteriorPageProps = {
   intro: string;
   mark: string;
   reference: string;
-  children: ReactNode;
+  children?: ReactNode;
 };
 
 export function InteriorPage({
@@ -38,7 +38,7 @@ export function InteriorPage({
         </aside>
       </section>
 
-      <section className="interior-content">{children}</section>
+      {children && <section className="interior-content">{children}</section>}
 
       <footer>
         <span>LAO_Z_3 / FIELD NOTES</span>
