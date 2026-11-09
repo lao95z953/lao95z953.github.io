@@ -1,7 +1,7 @@
 ---
 title: "Aegis CTF 2026 心得"
 date: "2026-11-09"
-tags: ["reflection", "ctf", "aegis", "prompt-injection", "jailbreak", "attack-defense"]
+tags: ["reflection", "ctf", "ai-security"]
 summary: "初賽靠一題 OSINT 猜出是哪間翰林茶館進了決賽，決賽選了 Prompt Pwn，第一天把 Jailbreak 刷到第一名，第二天被變嚴的 Judge 和一個沒寫在規則裡的重複懲罰機制壓回第三。A/D 被車爆那晚臨時搓了一個同步情報、開發 PoC 與 Patch 的平台，賽後才知道現成的早就有人在用。總分第 14 名。"
 ---
 

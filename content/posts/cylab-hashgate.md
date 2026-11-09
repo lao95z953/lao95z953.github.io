@@ -1,7 +1,7 @@
 ---
 title: "Cylab Hashgate"
 date: "2026-07-22"
-tags: ["writeup", "web", "picoctf", "cylab", "idor", "md5", "broken-access-control"]
+tags: ["writeup", "web"]
 summary: "登入頁 HTML 註解洩漏 guest 帳密；登入後 profile 用 MD5(user id) 當網址識別碼。把 guest 的 hash 丟 CrackStation 反查出 id=3000，再依『員工約 20 人』的提示從 3000 往上爆，在 3012 拿到 admin 的 flag。"
 ---
 

@@ -1,6 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ShellHeader } from "./_components/ShellHeader";
-import { GuestbookBoard } from "./guestbook/GuestbookBoard";
 
 const collections = [
   {
@@ -9,7 +9,6 @@ const collections = [
     mark: "{ }",
     title: "Posts",
     href: "/posts/",
-    description: "CTF WP、未來的 Pentest 靶機 WP 與概念筆記，同一條時間線。",
   },
   {
     number: "02",
@@ -17,23 +16,13 @@ const collections = [
     mark: "⌁",
     title: "Tools & Labs",
     href: "/labs/",
-    description: "整理實驗環境以及常用腳本工具。",
   },
   {
     number: "03",
-    label: "PERSONAL LOG",
-    mark: "LZ3",
-    title: "Reflections",
-    href: "/reflections/",
-    description: "記錄活動參與心得，以及我對資安、技術與成長的想法。",
-  },
-  {
-    number: "04",
     label: "TAGS",
     mark: "#",
     title: "Tags",
     href: "/tags/",
-    description: "用 tag 橫向找文章，不用先猜它被歸到哪一區。",
   },
 ] as const;
 
@@ -109,9 +98,6 @@ export default function Home() {
             <Link className="primary-action" href="/archive/">
               Explore archive <span aria-hidden="true">→</span>
             </Link>
-            <a className="text-action" href="#guestbook">
-              Guestbook <span aria-hidden="true">↓</span>
-            </a>
             <a
               className="text-action"
               href="https://github.com/lao95z953"
@@ -126,9 +112,15 @@ export default function Home() {
 
         <aside className="profile-aside" aria-label="學習者資料">
           <div>
-            <p className="specimen-label">Operator profile / 學習者檔案</p>
-            <div className="seal" aria-hidden="true">
-              LZ3
+            <p className="specimen-label">Operator profile</p>
+            <div className="seal">
+              <Image
+                src="/images/signature.png"
+                alt="LAO_Z_3 的簽名"
+                width={900}
+                height={767}
+                priority
+              />
             </div>
             <div className="aside-line">
               <span>CALLSIGN</span>
@@ -171,7 +163,7 @@ export default function Home() {
         <div className="collections-area">
           <div className="section-head">
             <h2 id="archive-title">Working Archive / 內容索引</h2>
-            <span>04 COLLECTIONS</span>
+            <span>03 COLLECTIONS</span>
           </div>
 
           <div className="cards">
@@ -191,7 +183,6 @@ export default function Home() {
                 </div>
                 <span className="card-status">OPEN INDEX ↗</span>
                 <h3>{collection.title}</h3>
-                <p>{collection.description}</p>
               </Link>
             ))}
           </div>
@@ -235,32 +226,8 @@ export default function Home() {
         </aside>
       </section>
 
-      <section
-        className="home-guestbook"
-        id="guestbook"
-        aria-labelledby="home-guestbook-title"
-      >
-        <div className="home-guestbook-head">
-          <div>
-            <p className="kicker">Community wall / 訪客留言板</p>
-            <h2 id="home-guestbook-title">Guestbook / 留言板</h2>
-          </div>
-          <div className="home-guestbook-intro">
-            <p>
-              寫下一張便條紙，再把它貼到你喜歡的位置。所有訪客都可以拖曳便條，
-              發布前會先顯示確認視窗。
-            </p>
-            <Link href="/guestbook/">
-              Open full page <span aria-hidden="true">↗</span>
-            </Link>
-          </div>
-        </div>
-
-        <GuestbookBoard />
-      </section>
-
       <footer>
-        <span>LAO_Z_3 / GUESTBOOK</span>
+        <span>LAO_Z_3 / FIELD NOTES</span>
         <span>NO TRACKING / NO UNNECESSARY SCRIPTS</span>
         <span>ISSUE 001 / 2026</span>
       </footer>

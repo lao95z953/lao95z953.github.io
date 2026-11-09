@@ -13,8 +13,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/posts",
     "/tags",
     "/labs",
-    "/reflections",
-    "/guestbook",
   ].map((path) => ({
     url: `${origin}${path}`,
     lastModified: fallbackDate,

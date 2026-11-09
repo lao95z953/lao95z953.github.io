@@ -5,7 +5,7 @@ type IndexItem = {
   label?: string;
   tags?: readonly string[];
   title: string;
-  description: string;
+  description?: string;
   href: string;
 };
 
@@ -30,7 +30,7 @@ export function CollectionIndex({ items }: { items: readonly IndexItem[] }) {
             )}
             <span className="index-copy">
               <strong>{item.title}</strong>
-              <small>{item.description}</small>
+              {item.description && <small>{item.description}</small>}
             </span>
             <span className="index-arrow" aria-hidden="true">↗</span>
           </>

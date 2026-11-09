@@ -1,7 +1,7 @@
 ---
 title: "pwnable.tw orw"
 date: "2026-07-20"
-tags: ["writeup", "pwn", "pwnable.tw", "shellcode", "seccomp", "orw"]
+tags: ["writeup", "pwn"]
 summary: "程式把輸入當 shellcode 直接執行，但 seccomp 只放行 open/read/write。讀 BPF 白名單、手刻一條 open → read → write 的 shellcode 把 /home/orw/flag 印出來。"
 ---
 

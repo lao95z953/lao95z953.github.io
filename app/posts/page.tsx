@@ -16,7 +16,6 @@ export default function PostsPage() {
     number: String(index + 1).padStart(2, "0"),
     tags: post.tags,
     title: post.title,
-    description: post.summary,
     href: `/posts/${post.slug}/`,
   }));
   const tags = getAllTags();
@@ -25,8 +24,6 @@ export default function PostsPage() {
     <InteriorPage
       eyebrow="Collection 01 / writeups & field notes"
       title="Posts"
-      intro="解題過程和概念筆記都收在這一條時間線上，不再分成兩個互不相通的區。要找特定主題就用 tag，一篇文章掛幾個 tag 就能從幾個方向被找到。"
-      mark="{ }"
       reference="Posts / one timeline"
     >
       {tags.length > 0 && (

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { InteriorPage } from "../_components/InteriorPage";
-import { getAllPosts, getAllTags } from "../../lib/posts";
+import { getAllTags } from "../../lib/posts";
 
 export const metadata: Metadata = {
   title: "Tags — LAO_Z_3",
@@ -10,21 +10,20 @@ export const metadata: Metadata = {
 
 export default function TagsPage() {
   const tags = getAllTags();
-  const total = getAllPosts().length;
 
   return (
     <InteriorPage
-      eyebrow="Index 04 / tags"
+      eyebrow="Index 03 / tags"
       title="Tags"
-      intro={`站上共 ${total} 篇文章。這裡是唯一的分類方式：一篇文章掛幾個 tag，就能從幾個方向被找到，不會因為被歸進某一區就只剩一條路徑。`}
-      mark="#"
       reference="Tags / many ways in"
     >
-      <div className="tag-cloud" aria-label="全部 tag">
+      <div className="tag-index" aria-label="全部 tag">
         {tags.map((tag) => (
-          <Link className="tag-chip" href={`/tags/${tag.slug}/`} key={tag.slug}>
-            #{tag.name}
-            <span aria-label={`${tag.count} 篇`}>{tag.count}</span>
+          <Link className="tag-index-row" href={`/tags/${tag.slug}/`} key={tag.slug}>
+            <span className="tag-index-name">#{tag.name}</span>
+            <span className="tag-index-count" aria-label={`${tag.count} 篇`}>
+              {tag.count}
+            </span>
           </Link>
         ))}
       </div>

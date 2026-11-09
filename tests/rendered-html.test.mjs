@@ -14,17 +14,14 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, /Explain\./);
   assert.match(html, />Posts</);
   assert.match(html, /Tools &amp; Labs/);
-  assert.match(html, />Reflections</);
+  assert.doesNotMatch(html, />Reflections</);
   assert.match(html, />Tags</);
-  assert.match(html, /04 COLLECTIONS/);
-  assert.match(html, />Guestbook/);
-  assert.match(html, /Community wall \/ 訪客留言板/);
-  assert.match(html, /寫一張便條/);
-  assert.match(html, /id="guestbook"/);
-  assert.match(html, /LAO_Z_3 \/ GUESTBOOK/);
-  assert.doesNotMatch(html, /LAO_Z_3 \/ FIELD NOTES/);
-  assert.match(html, /CTF WP、未來的 Pentest 靶機 WP 與概念筆記/);
-  assert.match(html, /用 tag 橫向找文章/);
+  assert.match(html, /03 COLLECTIONS/);
+  assert.match(html, /LAO_Z_3 \/ FIELD NOTES/);
+  assert.doesNotMatch(html, /GUESTBOOK|guestbook/);
+  // 首頁卡片只剩編號、標題與圖標，沒有說明文字
+  assert.doesNotMatch(html, /CTF WP、未來的 Pentest 靶機 WP 與概念筆記/);
+  assert.doesNotMatch(html, /用 tag 橫向找文章/);
   assert.match(html, /Achievements \/ 成績紀錄/);
   assert.match(html, /Google Cybersecurity/);
   assert.match(html, />MFCTF<\/h3>/);
@@ -70,17 +67,13 @@ test("exports discoverability files", async () => {
   assert.match(robots, /User-Agent:\s*\*/i);
   assert.match(robots, /Sitemap:\s*https:\/\/lao95z953\.pages\.dev\/sitemap\.xml/i);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev/);
-  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/guestbook/);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/posts/);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/tags/);
   assert.match(
     sitemap,
     /https:\/\/lao95z953\.pages\.dev\/posts\/cylab-hashgate\//,
   );
-  assert.match(
-    sitemap,
-    /https:\/\/lao95z953\.pages\.dev\/tags\/pwnable-tw\//,
-  );
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/tags\/pwn\//);
   assert.doesNotMatch(sitemap, /\/writeups\//);
 });
 
@@ -88,7 +81,7 @@ test("merges every post into one tag-indexed collection", async () => {
   const [index, tagsIndex, tagPage, post, redirects] = await Promise.all([
     readFile(new URL("posts/index.html", outputRoot), "utf8"),
     readFile(new URL("tags/index.html", outputRoot), "utf8"),
-    readFile(new URL("tags/pwnable-tw/index.html", outputRoot), "utf8"),
+    readFile(new URL("tags/pwn/index.html", outputRoot), "utf8"),
     readFile(new URL("posts/cylab-hashgate/index.html", outputRoot), "utf8"),
     readFile(new URL("_redirects", outputRoot), "utf8"),
   ]);
@@ -104,14 +97,14 @@ test("merges every post into one tag-indexed collection", async () => {
 
   // tag 是唯一的分類方式，且每個 tag 都點得進去
   assert.match(tagsIndex, /\/tags\/writeup\//);
-  assert.match(tagsIndex, /\/tags\/pwnable-tw\//);
+  assert.match(tagsIndex, /\/tags\/pwn\//);
 
-  // 含點號的 tag 會被 slug 化，兩篇 pwnable.tw 都要在同一頁
+  // 同一個 tag 底下要看得到它的每一篇
   assert.match(tagPage, /pwnable\.tw orw/);
   assert.match(tagPage, /pwnable\.tw start/);
 
   // 文章頁的 tag 是連結，不是純文字標籤
-  assert.match(post, /href="\/tags\/idor\/"/);
+  assert.match(post, /href="\/tags\/web\/"/);
   assert.doesNotMatch(post, /prose-meta-cat/);
 
   // 舊網址要轉向到新的單一列表

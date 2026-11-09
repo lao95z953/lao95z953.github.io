@@ -3,7 +3,7 @@ import { access, readFile } from "node:fs/promises";
 import test from "node:test";
 
 const outputRoot = new URL("../out/", import.meta.url);
-const expectedRoutes = ["archive", "writeups", "labs", "reflections", "guestbook"];
+const expectedRoutes = ["archive", "posts", "tags", "labs"];
 
 test("homepage links to every primary content route", async () => {
   const html = await readFile(new URL("index.html", outputRoot), "utf8");

@@ -43,7 +43,6 @@ export default async function TagPage({
     number: String(index + 1).padStart(2, "0"),
     tags: post.tags,
     title: post.title,
-    description: post.summary,
     href: `/posts/${post.slug}/`,
   }));
 
@@ -51,8 +50,6 @@ export default async function TagPage({
     <InteriorPage
       eyebrow={`Tag / ${found.count} 篇`}
       title={`#${found.name}`}
-      intro={`標上 #${found.name} 的文章。同一篇文章也會出現在它其他 tag 底下。`}
-      mark="#"
       reference="Tags / many ways in"
     >
       <CollectionIndex items={items} />
