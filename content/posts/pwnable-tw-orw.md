@@ -1,8 +1,7 @@
 ---
-title: "pwnable.tw orw — seccomp 沙盒下的 open-read-write shellcode"
+title: "pwnable.tw orw"
 date: "2026-07-20"
-category: "PWN"
-tags: ["pwn", "pwnable.tw", "shellcode", "seccomp", "orw"]
+tags: ["writeup", "pwn", "pwnable.tw", "shellcode", "seccomp", "orw"]
 summary: "程式把輸入當 shellcode 直接執行，但 seccomp 只放行 open/read/write。讀 BPF 白名單、手刻一條 open → read → write 的 shellcode 把 /home/orw/flag 印出來。"
 ---
 

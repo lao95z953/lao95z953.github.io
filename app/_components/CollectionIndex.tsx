@@ -2,7 +2,8 @@ import Link from "next/link";
 
 type IndexItem = {
   number: string;
-  label: string;
+  label?: string;
+  tags?: readonly string[];
   title: string;
   description: string;
   href: string;
@@ -16,7 +17,17 @@ export function CollectionIndex({ items }: { items: readonly IndexItem[] }) {
         const body = (
           <>
             <span className="index-number">{item.number}</span>
-            <span className="index-label">{item.label}</span>
+            {item.tags ? (
+              <span className="index-label index-label-tags">
+                {item.tags.map((tag) => (
+                  <span className="index-tag" key={tag}>
+                    #{tag}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="index-label">{item.label}</span>
+            )}
             <span className="index-copy">
               <strong>{item.title}</strong>
               <small>{item.description}</small>
@@ -27,7 +38,7 @@ export function CollectionIndex({ items }: { items: readonly IndexItem[] }) {
 
         return isExternal ? (
           <a
-            className="index-row"
+            className={`index-row${item.tags ? " index-row-tagged" : ""}`}
             href={item.href}
             key={item.number}
             target="_blank"
@@ -36,7 +47,11 @@ export function CollectionIndex({ items }: { items: readonly IndexItem[] }) {
             {body}
           </a>
         ) : (
-          <Link className="index-row" href={item.href} key={item.number}>
+          <Link
+            className={`index-row${item.tags ? " index-row-tagged" : ""}`}
+            href={item.href}
+            key={item.number}
+          >
             {body}
           </Link>
         );

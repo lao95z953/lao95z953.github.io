@@ -5,11 +5,11 @@ import { GuestbookBoard } from "./guestbook/GuestbookBoard";
 const collections = [
   {
     number: "01",
-    label: "WRITEUPS",
+    label: "POSTS",
     mark: "{ }",
-    title: "Writeups",
-    href: "/writeups/",
-    description: "收錄 CTF WP 以及未來的 Pentest 靶機 WP。",
+    title: "Posts",
+    href: "/posts/",
+    description: "CTF WP、未來的 Pentest 靶機 WP 與概念筆記，同一條時間線。",
   },
   {
     number: "02",
@@ -29,11 +29,11 @@ const collections = [
   },
   {
     number: "04",
-    label: "NOTES",
-    mark: "§",
-    title: "Notes",
-    href: "/notes/",
-    description: "把一個機制想清楚之後留下的概念筆記。",
+    label: "TAGS",
+    mark: "#",
+    title: "Tags",
+    href: "/tags/",
+    description: "用 tag 橫向找文章，不用先猜它被歸到哪一區。",
   },
 ] as const;
 
@@ -72,6 +72,16 @@ const achievements = [
     type: "CTF",
     title: "BroncoCTF",
     detail: "第 49 名 · Team RCEs",
+  },
+  {
+    type: "CTF",
+    title: "HITCON CTF",
+    detail: "第 21 名 · Team RCEs",
+  },
+  {
+    type: "CTF",
+    title: "AEGIS CTF",
+    detail: "Final 第 14 名",
   },
 ] as const;
 
@@ -190,7 +200,7 @@ export default function Home() {
         <aside className="notes" id="notes" aria-labelledby="notes-title">
           <div className="section-head achievement-head">
             <h2 id="notes-title">Achievements / 成績紀錄</h2>
-            <span>UPDATED / 2026.07.14</span>
+            <span>UPDATED / 2026.11.09</span>
           </div>
 
           <div

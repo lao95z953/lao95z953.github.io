@@ -12,10 +12,10 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, /Understand\./);
   assert.match(html, /Exploit\./);
   assert.match(html, /Explain\./);
-  assert.match(html, />Writeups</);
+  assert.match(html, />Posts</);
   assert.match(html, /Tools &amp; Labs/);
   assert.match(html, />Reflections</);
-  assert.match(html, />Notes</);
+  assert.match(html, />Tags</);
   assert.match(html, /04 COLLECTIONS/);
   assert.match(html, />Guestbook/);
   assert.match(html, /Community wall \/ 訪客留言板/);
@@ -23,7 +23,8 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, /id="guestbook"/);
   assert.match(html, /LAO_Z_3 \/ GUESTBOOK/);
   assert.doesNotMatch(html, /LAO_Z_3 \/ FIELD NOTES/);
-  assert.match(html, /收錄 CTF WP 以及未來的 Pentest 靶機 WP/);
+  assert.match(html, /CTF WP、未來的 Pentest 靶機 WP 與概念筆記/);
+  assert.match(html, /用 tag 橫向找文章/);
   assert.match(html, /Achievements \/ 成績紀錄/);
   assert.match(html, /Google Cybersecurity/);
   assert.match(html, />MFCTF<\/h3>/);
@@ -35,7 +36,14 @@ test("exports the finished Traditional Chinese homepage", async () => {
   assert.match(html, /第 53 名 · Team RCEs-2/);
   assert.match(html, />BroncoCTF<\/h3>/);
   assert.match(html, /第 49 名 · Team RCEs/);
-  assert.match(html, /UPDATED \/ 2026\.07\.14/);
+  assert.match(html, /UPDATED \/ 2026\.11\.09/);
+  assert.match(html, />HITCON CTF<\/h3>/);
+  assert.match(html, />AEGIS CTF<\/h3>/);
+  assert.match(html, /Final 第 14 名/);
+  assert.match(html, /第 21 名 · Team RCEs/);
+  // 新的排在最上面
+  assert.ok(html.indexOf("AEGIS CTF") < html.indexOf("HITCON CTF"));
+  assert.ok(html.indexOf("HITCON CTF") < html.indexOf("BroncoCTF"));
   assert.ok(
     html.indexOf("BroncoCTF") < html.indexOf("JuniorCryptCTF"),
   );
@@ -63,13 +71,53 @@ test("exports discoverability files", async () => {
   assert.match(robots, /Sitemap:\s*https:\/\/lao95z953\.pages\.dev\/sitemap\.xml/i);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev/);
   assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/guestbook/);
-  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/notes/);
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/posts/);
+  assert.match(sitemap, /https:\/\/lao95z953\.pages\.dev\/tags/);
   assert.match(
     sitemap,
-    /https:\/\/lao95z953\.pages\.dev\/notes\/nat-reverse-shell\//,
+    /https:\/\/lao95z953\.pages\.dev\/posts\/cylab-hashgate\//,
   );
   assert.match(
     sitemap,
-    /https:\/\/lao95z953\.pages\.dev\/writeups\/cylab-hashgate\//,
+    /https:\/\/lao95z953\.pages\.dev\/tags\/pwnable-tw\//,
   );
+  assert.doesNotMatch(sitemap, /\/writeups\//);
+});
+
+test("merges every post into one tag-indexed collection", async () => {
+  const [index, tagsIndex, tagPage, post, redirects] = await Promise.all([
+    readFile(new URL("posts/index.html", outputRoot), "utf8"),
+    readFile(new URL("tags/index.html", outputRoot), "utf8"),
+    readFile(new URL("tags/pwnable-tw/index.html", outputRoot), "utf8"),
+    readFile(new URL("posts/cylab-hashgate/index.html", outputRoot), "utf8"),
+    readFile(new URL("_redirects", outputRoot), "utf8"),
+  ]);
+
+  // 四篇文章全部落在同一個列表裡
+  for (const slug of ["cylab-hashgate", "pwnable-tw-orw", "pwnable-tw-start"]) {
+    assert.match(index, new RegExp(`/posts/${slug}/`));
+  }
+
+  // 列表不再按分類分區，也不保留舊的兩個入口
+  assert.doesNotMatch(index, /href="\/writeups\//);
+  assert.doesNotMatch(index, /href="\/notes\//);
+
+  // tag 是唯一的分類方式，且每個 tag 都點得進去
+  assert.match(tagsIndex, /\/tags\/writeup\//);
+  assert.match(tagsIndex, /\/tags\/pwnable-tw\//);
+
+  // 含點號的 tag 會被 slug 化，兩篇 pwnable.tw 都要在同一頁
+  assert.match(tagPage, /pwnable\.tw orw/);
+  assert.match(tagPage, /pwnable\.tw start/);
+
+  // 文章頁的 tag 是連結，不是純文字標籤
+  assert.match(post, /href="\/tags\/idor\/"/);
+  assert.doesNotMatch(post, /prose-meta-cat/);
+
+  // 舊網址要轉向到新的單一列表
+  // 兩種 trailing slash 寫法都要在，Cloudflare 的文件沒有保證單一寫法會同時命中
+  assert.match(redirects, /^\/notes\/:slug \/posts\/:slug\/ 301$/m);
+  assert.match(redirects, /^\/notes\/:slug\/ \/posts\/:slug\/ 301$/m);
+  assert.match(redirects, /^\/writeups\/:slug \/posts\/:slug\/ 301$/m);
+  assert.match(redirects, /^\/writeups\/:slug\/ \/posts\/:slug\/ 301$/m);
 });

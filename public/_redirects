@@ -1,0 +1,10 @@
+# 舊的兩區入口與文章網址，全部轉到合併後的 /posts/
+# 靜態規則要排在動態規則前面，trailing slash 的兩種寫法都列出來
+/notes /posts/ 301
+/notes/ /posts/ 301
+/writeups /posts/ 301
+/writeups/ /posts/ 301
+/notes/:slug /posts/:slug/ 301
+/notes/:slug/ /posts/:slug/ 301
+/writeups/:slug /posts/:slug/ 301
+/writeups/:slug/ /posts/:slug/ 301

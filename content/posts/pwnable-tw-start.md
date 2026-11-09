@@ -1,8 +1,7 @@
 ---
-title: "pwnable.tw start — 手刻 stack leak + ret2shellcode"
+title: "pwnable.tw start"
 date: "2026-07-19"
-category: "PWN"
-tags: ["pwn", "pwnable.tw", "ret2shellcode", "stack-leak", "x86"]
+tags: ["writeup", "pwn", "pwnable.tw", "ret2shellcode", "stack-leak", "x86"]
 summary: "pwnable.tw 的第一題 start。從讀 32-bit syscall、找 offset，到踩進「用 GDB 位址硬寫」的坑，最後用 push %esp 洩漏 stack、在同一個 process 內二次輸入完成 ret2shellcode。"
 ---
 

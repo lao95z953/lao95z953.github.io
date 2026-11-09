@@ -1695,3 +1695,126 @@ footer span:last-child {
 .prose-back a {
   color: var(--accent);
 }
+
+/* 列表列：有 tag 的列不用左邊那欄窄標籤，tag 改放在摘要下面一整排，
+   欄位位置全部寫死，避免 auto-placement 因為多一個子元素而位移。 */
+.index-row-tagged {
+  grid-template-columns: 64px minmax(0, 1fr) 32px;
+  row-gap: 12px;
+}
+
+.index-row-tagged .index-number {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.index-row-tagged .index-copy {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.index-row-tagged .index-arrow {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.index-label-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  grid-column: 2 / 4;
+  grid-row: 2;
+  align-self: start;
+  text-transform: lowercase;
+  letter-spacing: 0.04em;
+}
+
+.index-tag {
+  white-space: nowrap;
+}
+
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 38px;
+  padding-bottom: 26px;
+  border-bottom: 1px solid var(--line);
+}
+
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font: 500 11px/1 var(--mono);
+  letter-spacing: 0.05em;
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.tag-chip span {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.tag-chip:hover,
+.tag-chip:focus-visible {
+  color: var(--paper-light);
+  background: var(--ink);
+  border-color: var(--ink);
+  outline: 0;
+}
+
+.tag-chip:hover span,
+.tag-chip:focus-visible span {
+  color: var(--line);
+}
+
+/* 手機版原本整欄藏起來，tag 列要跟著窄版的三欄走。 */
+@media (max-width: 720px) {
+  .index-row-tagged {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+    row-gap: 10px;
+  }
+}
+
+/* 文章頁的 hero 沒有摘要之後會空一大塊，把日期和 tag 放進來補位。 */
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-top: 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.hero-meta a.tag {
+  color: var(--accent);
+  transition: color 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.hero-meta a.tag:hover,
+.hero-meta a.tag:focus-visible {
+  color: var(--paper-light);
+  background: var(--accent);
+  border-color: var(--accent);
+  outline: 0;
+}
+
+/* 文章頁沒有右邊那欄標記，hero 就不該再撐 370px 的空白。 */
+.interior-hero-plain {
+  grid-template-columns: 80px minmax(0, 1fr);
+  min-height: 0;
+}
+
+@media (max-width: 1100px) {
+  /* 跟原本的 .interior-hero 一樣縮成 52px，否則上面那條會把它蓋回 80px。 */
+  .interior-hero-plain {
+    grid-template-columns: 52px 1fr;
+  }
+}

@@ -1,6 +1,5 @@
 import type { MetadataRoute } from "next";
-import { getAllNotes } from "../lib/notes";
-import { getAllWriteups } from "../lib/writeups";
+import { getAllPosts, getAllTags } from "../lib/posts";
 
 export const dynamic = "force-static";
 
@@ -11,8 +10,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const landing: MetadataRoute.Sitemap = [
     "",
     "/archive",
-    "/writeups",
-    "/notes",
+    "/posts",
+    "/tags",
     "/labs",
     "/reflections",
     "/guestbook",
@@ -23,20 +22,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: path === "" ? 1 : 0.8,
   }));
 
-  const entries: MetadataRoute.Sitemap = [
-    ...getAllWriteups().map((writeup) => ({
-      url: `${origin}/writeups/${writeup.slug}/`,
-      lastModified: writeup.date ? new Date(writeup.date) : fallbackDate,
-      changeFrequency: "yearly" as const,
-      priority: 0.6,
-    })),
-    ...getAllNotes().map((note) => ({
-      url: `${origin}/notes/${note.slug}/`,
-      lastModified: note.date ? new Date(note.date) : fallbackDate,
-      changeFrequency: "yearly" as const,
-      priority: 0.6,
-    })),
-  ];
+  const posts: MetadataRoute.Sitemap = getAllPosts().map((post) => ({
+    url: `${origin}/posts/${post.slug}/`,
+    lastModified: post.date ? new Date(post.date) : fallbackDate,
+    changeFrequency: "yearly" as const,
+    priority: 0.6,
+  }));
 
-  return [...landing, ...entries];
+  const tags: MetadataRoute.Sitemap = getAllTags().map((tag) => ({
+    url: `${origin}/tags/${tag.slug}/`,
+    lastModified: fallbackDate,
+    changeFrequency: "monthly" as const,
+    priority: 0.4,
+  }));
+
+  return [...landing, ...posts, ...tags];
 }
